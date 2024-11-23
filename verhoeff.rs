@@ -23,7 +23,7 @@ fn get_permutation(digit: usize, position: usize) -> Result<usize, String> {
     ))
 }
 
-fn get_checksum(input: String) {
+fn get_checksum(input: String) -> usize {
     let d5_cayley_table = [
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
@@ -34,26 +34,50 @@ fn get_checksum(input: String) {
         [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
         [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
         [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
-        [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
     ];
 
-    let mut digits = [];
+    let inv_table = [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [0, 4, 3, 2, 1, 5, 6, 7, 8, 9],
+    ];
+
+    let mut digits = vec![];
     for ch in input.chars() {
         if let Some(digit) = ch.to_digit(10) {
             digits.push(digit as usize);
         } else {
-            println!("{} is not a digit!", ch)
+            println!("{} is not a digit!", ch);
         }
     }
+    let mut c = 0;
+    for (idx, digit) in digits.iter().rev().enumerate() {
+        let p_idx: usize = get_permutation(*digit, idx + 1).expect("REASON");
+        c = d5_cayley_table[c][p_idx];
+    }
+    inv_table[1][c]
+}
+
+fn validate_checksum(input: String) -> bool {
+    let checksum = get_checksum(input[0..(input.len() - 1)].to_string());
+    let last_digit: usize = input.chars().last().unwrap().to_digit(10).unwrap() as usize;
+    println!("{}, {}", checksum, last_digit);
+    checksum == last_digit
 }
 
 fn main() {
     // Example usage: Get the permutation of digit 7 at position 3
-    let digit = 7;
-    let position = 10;
-    let permuted_digit = get_permutation(digit, position);
+    let input = String::from("249");
+    println!("Checksum for {}: {}", input.clone(), get_checksum(input));
+
+    let validate = String::from("2495");
     println!(
-        "Permutation of digit {} at position {} is {}",
-        digit, position, permuted_digit
-    );
+        "{} {}",
+        validate.clone(),
+        if validate_checksum(validate) {
+            "is valid"
+        } else {
+            "is not valid"
+        }
+    )
 }
