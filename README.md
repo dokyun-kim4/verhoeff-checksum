@@ -1,2 +1,2 @@
 # verhoeff-checksum
-Verhoeff checksum implementetd using Rust
+Verhoeff checksum implemented using Rust
