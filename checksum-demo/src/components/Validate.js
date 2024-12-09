@@ -17,8 +17,10 @@ const Validate = () => {
 
   const handleTextInput = (e) => {
     const inputValue = e.target.value;
+    if (/^\d*$/.test(inputValue)) {
     setInputText(inputValue);
     console.log("inputText:", inputText);
+  }
   };
 
   useEffect(() => {
