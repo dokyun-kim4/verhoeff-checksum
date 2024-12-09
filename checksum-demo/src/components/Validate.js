@@ -15,6 +15,7 @@ const Validate = () => {
     }
   }
 
+  
   const handleTextInput = (e) => {
     const inputValue = e.target.value;
     if (/^\d*$/.test(inputValue)) {
